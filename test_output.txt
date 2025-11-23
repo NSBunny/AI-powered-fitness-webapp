@@ -1,0 +1,8 @@
+Script started
+Attempting to register user...
+No response received (Server might be down): Error
+Script finished
+Script started
+Attempting to register user...
+No response received (Server might be down): Error
+Script finished
