@@ -81,12 +81,60 @@ const WorkoutGenerator = () => {
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Your Weekly Plan</h2>
                     <div className="space-y-6">
                         {Object.entries(plan).map(([day, details]) => (
-                            <div key={day} className="border-b border-gray-200 pb-4 last:border-0">
-                                <h3 className="text-lg font-medium text-indigo-600 capitalize">{day}</h3>
-                                <div className="mt-2 text-gray-600 whitespace-pre-wrap">
-                                    {/* Handle if details is string or object */}
-                                    {typeof details === 'string' ? details : JSON.stringify(details, null, 2)}
-                                </div>
+                            <div key={day} className="border-b border-gray-200 pb-6 last:border-0">
+                                <h3 className="text-xl font-semibold text-indigo-700 capitalize mb-3">{day}</h3>
+
+                                {details.Focus && (
+                                    <div className="mb-2">
+                                        <span className="font-medium text-gray-700">Focus: </span>
+                                        <span className="text-gray-600">{details.Focus}</span>
+                                    </div>
+                                )}
+                                {details.Duration && (
+                                    <div className="mb-4">
+                                        <span className="font-medium text-gray-700">Duration: </span>
+                                        <span className="text-gray-600">{details.Duration}</span>
+                                    </div>
+                                )}
+                                {details["Warm-up"] && (
+                                    <div className="mb-4">
+                                        <span className="font-medium text-gray-700">Warm-up: </span>
+                                        <span className="text-gray-600">{details["Warm-up"]}</span>
+                                    </div>
+                                )}
+
+                                {(details.Exercises || details["Workout Details"]) && Array.isArray(details.Exercises || details["Workout Details"]) ? (
+                                    <div className="bg-gray-50 rounded-lg p-4">
+                                        <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3">Exercises</h4>
+                                        <div className="space-y-4">
+                                            {(details.Exercises || details["Workout Details"]).map((exercise, idx) => (
+                                                <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-3 rounded shadow-sm">
+                                                    <div className="font-medium text-gray-900 mb-1 sm:mb-0">{exercise.Exercise || exercise.Name || "Exercise"}</div>
+                                                    <div className="flex space-x-4 text-sm text-gray-500">
+                                                        <span>{exercise.Sets ? `${exercise.Sets} Sets` : ''}</span>
+                                                        <span>{exercise.Reps}</span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-2">
+                                        {typeof details === 'object' ? (
+                                            Object.entries(details).map(([key, value]) => {
+                                                if (['Focus', 'Duration', 'Warm-up'].includes(key)) return null; // Already rendered
+                                                return (
+                                                    <div key={key} className="text-gray-600">
+                                                        <span className="font-medium text-gray-700 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}: </span>
+                                                        <span>{typeof value === 'string' ? value : JSON.stringify(value).replace(/["{}[\]]/g, '')}</span>
+                                                    </div>
+                                                );
+                                            })
+                                        ) : (
+                                            <p className="text-gray-600">{details}</p>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>

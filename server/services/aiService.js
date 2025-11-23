@@ -4,7 +4,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const generateWorkoutPlan = async (userProfile, goals) => {
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
         const prompt = `Generate a detailed weekly workout plan for a user with the following profile:
         - Age: ${userProfile.age}
@@ -24,13 +24,13 @@ const generateWorkoutPlan = async (userProfile, goals) => {
         return JSON.parse(jsonStr);
     } catch (error) {
         console.error("AI Generation Error:", error);
-        throw new Error("Failed to generate workout plan");
+        throw new Error(`Failed to generate workout plan: ${error.message}`);
     }
 };
 
 const generateMealPlan = async (userProfile, preferences) => {
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
         const prompt = `Generate a detailed weekly meal plan for a user with the following profile:
         - Dietary Preferences: ${preferences}
@@ -47,7 +47,7 @@ const generateMealPlan = async (userProfile, preferences) => {
         return JSON.parse(jsonStr);
     } catch (error) {
         console.error("AI Generation Error:", error);
-        throw new Error("Failed to generate meal plan");
+        throw new Error(`Failed to generate meal plan: ${error.message}`);
     }
 };
 

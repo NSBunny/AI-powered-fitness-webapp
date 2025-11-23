@@ -60,11 +60,30 @@ const MealGenerator = () => {
                 <div className="bg-white shadow sm:rounded-lg p-6">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Your Weekly Meal Plan</h2>
                     <div className="space-y-6">
-                        {Object.entries(plan).map(([day, details]) => (
-                            <div key={day} className="border-b border-gray-200 pb-4 last:border-0">
-                                <h3 className="text-lg font-medium text-green-600 capitalize">{day}</h3>
-                                <div className="mt-2 text-gray-600 whitespace-pre-wrap">
-                                    {typeof details === 'string' ? details : JSON.stringify(details, null, 2)}
+                        {Object.entries(plan).map(([day, meals]) => (
+                            <div key={day} className="border-b border-gray-200 pb-6 last:border-0">
+                                <h3 className="text-xl font-semibold text-green-700 capitalize mb-4">{day}</h3>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {Object.entries(meals).map(([mealType, description]) => (
+                                        <div key={mealType} className="bg-gray-50 p-4 rounded-lg">
+                                            <h4 className="text-sm font-bold text-green-800 uppercase tracking-wide mb-2">{mealType}</h4>
+                                            <div className="text-gray-700 text-sm leading-relaxed">
+                                                {typeof description === 'string' ? (
+                                                    description
+                                                ) : (
+                                                    <ul className="list-disc list-inside">
+                                                        {Object.entries(description).map(([key, val]) => (
+                                                            <li key={key}>
+                                                                <span className="font-medium">{key}: </span>
+                                                                {typeof val === 'string' ? val : JSON.stringify(val).replace(/["{}[\]]/g, '')}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         ))}
