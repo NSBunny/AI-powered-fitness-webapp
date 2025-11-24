@@ -5,6 +5,8 @@ const WorkoutGenerator = () => {
     const [formData, setFormData] = useState({
         age: '',
         gender: 'Male',
+        weight: '',
+        height: '',
         fitnessLevel: 'Beginner',
         goals: ''
     });
@@ -24,14 +26,17 @@ const WorkoutGenerator = () => {
                 userProfile: {
                     age: formData.age,
                     gender: formData.gender,
+                    weight: formData.weight,
+                    height: formData.height,
                     fitnessLevel: formData.fitnessLevel
                 },
                 goals: formData.goals
             });
             setPlan(res.data);
         } catch (err) {
-            setError('Failed to generate plan. Please try again.');
             console.error(err);
+            const msg = err.response?.data?.msg || err.message || 'Failed to generate plan';
+            setError(`Error: ${msg}. Please try again.`);
         }
         setLoading(false);
     };
@@ -54,6 +59,14 @@ const WorkoutGenerator = () => {
                                 <option>Female</option>
                                 <option>Other</option>
                             </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Weight (kg)</label>
+                            <input type="number" name="weight" required value={formData.weight} onChange={onChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Height (ft)</label>
+                            <input type="number" step="0.1" name="height" required value={formData.height} onChange={onChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Fitness Level</label>
@@ -122,11 +135,34 @@ const WorkoutGenerator = () => {
                                     <div className="space-y-2">
                                         {typeof details === 'object' ? (
                                             Object.entries(details).map(([key, value]) => {
-                                                if (['Focus', 'Duration', 'Warm-up'].includes(key)) return null; // Already rendered
+                                                if (['Focus', 'Duration', 'Warm-up'].includes(key)) return null;
+
+                                                // Helper to parse stringified lists
+                                                const renderValue = (val) => {
+                                                    if (typeof val !== 'string') return JSON.stringify(val).replace(/["{}[\]]/g, '');
+
+                                                    // Check for comma-separated key-value pairs like "Activity:..., Description:..."
+                                                    if (val.includes(':') && val.includes(',')) {
+                                                        const parts = val.split(',').map(part => part.trim());
+                                                        return (
+                                                            <ul className="list-disc list-inside mt-1">
+                                                                {parts.map((part, i) => {
+                                                                    const [k, v] = part.split(':').map(s => s.trim());
+                                                                    if (v) {
+                                                                        return <li key={i}><span className="font-medium">{k}:</span> {v}</li>;
+                                                                    }
+                                                                    return <li key={i}>{part}</li>;
+                                                                })}
+                                                            </ul>
+                                                        );
+                                                    }
+                                                    return val;
+                                                };
+
                                                 return (
                                                     <div key={key} className="text-gray-600">
                                                         <span className="font-medium text-gray-700 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}: </span>
-                                                        <span>{typeof value === 'string' ? value : JSON.stringify(value).replace(/["{}[\]]/g, '')}</span>
+                                                        <span>{renderValue(value)}</span>
                                                     </div>
                                                 );
                                             })
@@ -137,6 +173,26 @@ const WorkoutGenerator = () => {
                                 )}
                             </div>
                         ))}
+                    </div>
+                    <div className="mt-6">
+                        <button
+                            onClick={async () => {
+                                try {
+                                    const token = localStorage.getItem('token');
+                                    await axios.post('/api/user/plan', { plan }, {
+                                        headers: { 'x-auth-token': token }
+                                    });
+                                    alert('Plan saved to dashboard!');
+                                } catch (err) {
+                                    console.error(err);
+                                    const msg = err.response?.data?.msg || err.message;
+                                    alert(`Failed to save plan: ${msg}`);
+                                }
+                            }}
+                            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                        >
+                            Save to Dashboard
+                        </button>
                     </div>
                 </div>
             )}

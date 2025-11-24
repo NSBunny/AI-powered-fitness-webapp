@@ -13,13 +13,12 @@ export const AuthProvider = ({ children }) => {
             if (token) {
                 axios.defaults.headers.common['x-auth-token'] = token;
                 try {
-                    // Verify token implementation would go here, for now just decode or trust
-                    // In a real app, you'd hit a /me endpoint
-                    // const res = await axios.get('http://localhost:5000/api/auth/me');
-                    // setUser(res.data);
-                    setUser({ token }); // Simplified for now
+                    const res = await axios.get('/api/user/profile');
+                    setUser(res.data);
                 } catch (err) {
                     localStorage.removeItem('token');
+                    delete axios.defaults.headers.common['x-auth-token'];
+                    setUser(null);
                 }
             }
             setLoading(false);

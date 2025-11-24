@@ -16,12 +16,14 @@ app.use(express.json());
 const sequelize = require('./config/database');
 
 // Database Connection
-sequelize.sync()
+// Database Connection
+sequelize.sync({ alter: true })
     .then(() => console.log('PostgreSQL Connected & Models Synced'))
     .catch(err => console.error('Database Connection Error:', err));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/user', require('./routes/user'));
 app.use('/api/workout', require('./routes/workout'));
 app.use('/api/meal', require('./routes/meal'));
 
