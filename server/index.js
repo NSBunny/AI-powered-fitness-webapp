@@ -31,6 +31,15 @@ app.get('/', (req, res) => {
     res.send('AI Fitness App Backend is Running');
 });
 
+app.get('/api/health', async (req, res) => {
+    try {
+        await sequelize.authenticate();
+        res.json({ status: 'ok', database: 'connected', timestamp: new Date() });
+    } catch (err) {
+        res.status(500).json({ status: 'error', database: 'disconnected', error: err.message });
+    }
+});
+
 if (require.main === module) {
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);
