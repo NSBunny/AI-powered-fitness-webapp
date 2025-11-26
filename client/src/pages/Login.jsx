@@ -18,7 +18,9 @@ const Login = () => {
             await login(email, password);
             navigate('/dashboard');
         } catch (err) {
-            setError(err.response?.data?.msg || 'Login failed');
+            console.error('Login Error:', err);
+            const errorMsg = err.response?.data?.msg || err.response?.data?.message || err.message || 'Login failed';
+            setError(typeof errorMsg === 'object' ? JSON.stringify(errorMsg) : errorMsg);
         }
     };
 
@@ -27,6 +29,7 @@ const Login = () => {
             <div className="max-w-md w-full space-y-8">
                 <div>
                     <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
+                    <p className="text-center text-xs text-gray-400 mt-2">v1.1 Debug</p>
                 </div>
                 <form className="mt-8 space-y-6" onSubmit={onSubmit}>
                     <div className="rounded-md shadow-sm -space-y-px">
