@@ -1,7 +1,11 @@
 node_modules
 .env
-.env.*
-database.sqlite
-*.log
-*output.txt
-test_*.js
+*.sqlite
+test_auth_script.js
+test_all_features.js
+server/test_groq_models.js
+server/model_list_output.txt
+server/api_response.txt
+server/debug_log.txt
+server/model_check_log.txt
+server/model_test_output.txt
