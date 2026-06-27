@@ -1,0 +1,5 @@
+Script started
+Dotenv loaded
+Service loaded
+Testing Workout Generation...
+Workout Plan Generated Successfully
