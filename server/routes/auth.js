@@ -9,10 +9,22 @@ router.post('/register', async (req, res) => {
     try {
         const { username, email, password } = req.body;
 
-        // Check if user exists
+        // Check if email format is valid
+        const emailRegex = /\S+@\S+\.\S+/;
+        if (!email || !emailRegex.test(email)) {
+            return res.status(400).json({ msg: 'Please provide a valid email address' });
+        }
+
+        // Check if email exists
         let user = await User.findOne({ where: { email } });
         if (user) {
-            return res.status(400).json({ msg: 'User already exists' });
+            return res.status(400).json({ msg: 'Email is already registered' });
+        }
+
+        // Check if username exists
+        let userByUsername = await User.findOne({ where: { username } });
+        if (userByUsername) {
+            return res.status(400).json({ msg: 'Username is already taken' });
         }
 
         // Hash password
